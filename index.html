@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DS Lab – Circular Queue</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 20px;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        p {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📘 Data Structures Lab</h1>
+<h2>Circular Queue using Dynamic Array</h2>
+
+<div class="container">
+
+<h3>Problem Statement</h3>
+<p>
+Write a C program to implement a circular queue using dynamically allocated array
+and perform the following operations:
+</p>
+<ul>
+    <li>Insert an item</li>
+    <li>Delete an item</li>
+    <li>Display the circular queue</li>
+</ul>
+
+<h3>C Program</h3>
+
+<pre>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+typedef struct {
+    int *arr;    
+    int front, rear, size, capacity;
+} CircularQueue;
+
+CircularQueue* createQueue(int capacity) {
+    CircularQueue *q = (CircularQueue*)malloc(sizeof(CircularQueue));
+    q-&gt;capacity = capacity;
+    q-&gt;front = q-&gt;rear = -1;
+    q-&gt;arr = (int*)malloc(capacity * sizeof(int));
+    return q;
+}
+
+int isFull(CircularQueue *q) {
+    return ((q-&gt;rear + 1) % q-&gt;capacity == q-&gt;front);
+}
+
+int isEmpty(CircularQueue *q) {
+    return (q-&gt;front == -1);
+}
+
+void enqueue(CircularQueue *q, int item) {
+    if (isFull(q)) {
+        printf("Queue is FULL! Cannot insert %d\n", item);
+        return;
+    }
+    if (q-&gt;front == -1)
+        q-&gt;front = 0;
+    q-&gt;rear = (q-&gt;rear + 1) % q-&gt;capacity;
+    q-&gt;arr[q-&gt;rear] = item;
+    printf("Inserted: %d\n", item);
+}
+
+void dequeue(CircularQueue *q) {
+    if (isEmpty(q)) {
+        printf("Queue is EMPTY! Cannot delete\n");
+        return;
+    }
+    printf("Deleted: %d\n", q-&gt;arr[q-&gt;front]);
+    if (q-&gt;front == q-&gt;rear) {
+        q-&gt;front = q-&gt;rear = -1;
+    } else {
+        q-&gt;front = (q-&gt;front + 1) % q-&gt;capacity;
+    }
+}
+
+void display(CircularQueue *q) {
+    if (isEmpty(q)) {
+        printf("Queue is EMPTY!\n");
+        return;
+    }
+    printf("Circular Queue: ");
+    int i = q-&gt;front;
+    while (1) {
+        printf("%d ", q-&gt;arr[i]);
+        if (i == q-&gt;rear) break;
+        i = (i + 1) % q-&gt;capacity;
+    }
+    printf("\n");
+}
+
+int main() {
+    int capacity, choice, item;
+    printf("Enter size of Circular Queue: ");
+    scanf("%d", &capacity);
+
+    CircularQueue *q = createQueue(capacity);
+
+    while (1) {
+        printf("\n--- Circular Queue Menu ---\n");
+        printf("1. Insert\n2. Delete\n3. Display\n4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter element to insert: ");
+                scanf("%d", &item);
+                enqueue(q, item);
+                break;
+            case 2:
+                dequeue(q);
+                break;
+            case 3:
+                display(q);
+                break;
+            case 4:
+                free(q-&gt;arr);
+                free(q);
+                exit(0);
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+    return 0;
+}
+</pre>
+
+</div>
+
+</body>
+</html>
